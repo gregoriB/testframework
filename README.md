@@ -10,15 +10,15 @@ Very light and limited testing framework.
 * Automatic importing of fixtures
 * Spy on methods
 * Use CLI to Specify which files to test and which console logs to log
-* Familiar style to popular frameworks like Jest and Mocha.
+* Familiar style to popular frameworks like Jest and Mocha
 
 <br>
 
 ## Usage in Nodejs
 
-Add folder to root directly of your project. Import the `TestSuite` and be sure to export your test results after writing the tests.
+Add folder to the root directly of your project. Import the `TestSuite` and be sure to export your test results after writing the tests.
 
-Test files should containt `.test.js` in the name.  Fixture files should contain `.fixtures.js`.
+Test files should contain `.test.js` in the name.  Fixture files should contain `.fixtures.js`.
 
 To run all tests, execute `node ./testframework/runner.js` in the CLI.  
 Specific test or tests can be run by adding the file name without the extensions
@@ -91,7 +91,7 @@ assert = {
  *     person.getName();
  *     const report = spy.getReport(); // method name, call count, args and return values for each call
  */
-createSpy(Function);
+createSpy(Object);
 ```
 <br>
 

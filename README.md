@@ -16,7 +16,7 @@ Very light and limited testing framework.
 
 ## Usage in Nodejs
 
-Extract folder to root directly of project. Import the `TestSuite` and be sure to export your test results after writing the tests.
+Add folder to root directly of your project. Import the `TestSuite` and be sure to export your test results after writing the tests.
 
 Test files should containt `.test.js` in the name.  Fixture files should contain `.fixtures.js`.
 

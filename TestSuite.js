@@ -246,15 +246,15 @@ class Assert {
 class Spy {
     constructor(context) {
         this.context = context;
-        this.report = {};
+        this.reports = {};
     }
 
-    getReport() {
-        return this.report;
+    getReports() {
+        return this.reports;
     }
 
-    setDefaultReportProperties(name) {
-        this.report[name] = {
+    initializeReport(name) {
+        this.reports[name] = {
             args: [],
             returned: [],
             callCount: 0
@@ -262,16 +262,16 @@ class Spy {
     }
 
     updateReport(name, args, returned) {
-        const report = this.report[name];
-        this.report[name] = { 
+        const report = this.reports[name];
+        this.reports[name] = { 
             args: [...report.args, [report.args.length, args]],
             returned: [...report.returned, [report.returned.length, returned]],
-            callCount: ++report.callCount 
+            callCount: report.callCount + 1
         };
     }
 
     watch(fn) {
-        this.setDefaultReportProperties(fn.name);
+        this.initializeReport(fn.name);
         return (...args) => {
             const returned = fn.call(this.context, ...args);
             this.updateReport(fn.name, args, returned);

@@ -84,12 +84,22 @@ assert = {
 
 /*
  * Create a new spy instance.  Accepts a class or object to use for context. Then can be used
- * to watch a method on the object, and eventually get a "report" of how the method was used.
+ * to watch a method or methods on the object, and eventually get a "report" of how they were used.
  * eg: const person = new Person("Mary");
  *     const spy = createSpy(person);
  *     const person.getName = spy.watch(person.getName);
  *     person.getName();
- *     const report = spy.getReport(); // method name, call count, args and return values for each call
+ *     // Get reports including call counts, any args used, and the return values for each call.  
+ *     // Returns all reports for all watched methods.
+ *     const report = spy.getReports(); 
+ *     // eg. report = {
+ *     //         getName: { 
+ *     //             callCount: 1, 
+ *     //             args: [[0, []]],  // args and returned values are numbered for quick reference
+ *     //             returned: [[0, "Mary"]]
+ *     //         } 
+ *     //     }
+ * 
  */
 createSpy(Object);
 ```
@@ -171,8 +181,8 @@ tests.run('Blockchain', (tools) => {
         chain.minePending(payoutAddress);
         chain.addTransactionToPending(transaction);
         chain.minePending(payoutAddress);
-        const spyReport = spy.getReport();
-        assert.equal(spyReport.executeObservers.callCount, 2);
+        const spyReport = spy.getReports()["executeObservers"];
+        assert.equal(spyReport.callCount, 2);
         assert.equal(counter, 12);
     });
 });

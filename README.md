@@ -20,18 +20,18 @@ Add folder to the root directly of your project. Import the `TestSuite` and be s
 
 Test files should contain `.test.js` in the name.  Fixture files should contain `.fixtures.js`.
 
-To run all tests, execute `node ./testframework/runner.js` in the CLI.  
+To run all tests, execute `node ./testlib/runner.js` in the CLI.  
 Specific test or tests can be run by adding the file name without the extensions
 as an argument,
 <br>
-eg: `node ./testframework/runner.js person`
+eg: `node ./testlib/runner.js person`
 
 <br>
 
 ### Basic example testing a `Person` class from `/src/tests/person.test.js`:
 ```js
 const Person = require("../person");
-const TestSuite = require("../../testframework/TestSuite.js");
+const TestSuite = require("../../testlib/TestSuite.js");
 const tests = new TestSuite();
 
 tests.run("Person Class", (tools) => {
@@ -107,7 +107,7 @@ Here is a list of CLI flags that can be run to change logging behavior:
 -no-result-logs // Disables the results log(though I don't know why you'd want to do that)
 -only-result-logs // All logs except for the results log are disabled.  Doesn't show you which test failed though.
 ```
-eg: `node ./testframework/runner.js person -no-logs -no-errors`
+eg: `node ./testlib/runner.js person -no-logs -no-errors`
 
 <br>
 
@@ -116,7 +116,7 @@ eg: `node ./testframework/runner.js person -no-logs -no-errors`
 ```js
 const BlockChain = require('../BlockChain.js');
 const Transaction = require('../Transaction.js');
-const TestSuite = require('../../testframework/TestSuite.js');
+const TestSuite = require('../../testlib/TestSuite.js');
 
 const tests = new TestSuite();
 

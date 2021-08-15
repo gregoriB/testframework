@@ -87,7 +87,7 @@ assert = {
  * to watch a method or methods on the object, and eventually get a "report" of how they were used.
  * eg: const person = new Person("Mary");
  *     const spy = createSpy(person);
- *     const person.getName = spy.watch(person.getName);
+ *     person.getName = spy.watch(person.getName);
  *     person.getName();
  *     // Get reports including call counts, any args used, and the return values for each call.  
  *     // Returns all reports for all watched methods.

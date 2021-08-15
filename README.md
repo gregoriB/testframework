@@ -172,7 +172,7 @@ tests.run('Blockchain', (tools) => {
         chain.addTransactionToPending(transaction);
         chain.minePending(payoutAddress);
         const spyReport = spy.getReport();
-        assert.equal(spyReport.callCount, 2);
+        assert.equal(spyReport.executeObservers.callCount, 2);
         assert.equal(counter, 12);
     });
 });

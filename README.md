@@ -37,7 +37,7 @@ const tests = new TestSuite();
 tests.run("Person Class", (tools) => {
     const { test, assert } = tools;
 
-    test("Person has a name", () => {
+    test("New person instance has correct name", () => {
         const person = new Person("Heisenberg");
         assert.equal(person.getName(), "Heisenberg");
     });

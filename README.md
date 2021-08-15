@@ -6,7 +6,7 @@ Very light and limited testing framework.
 
 ## Features
 
-* Automatic running test files
+* Automatic running of test files
 * Automatic importing of fixtures
 * Spy on methods
 * Use CLI to Specify which files to test and which console logs to log
@@ -57,7 +57,7 @@ beforeEach(Function);
 /*
  * Main function for running our test.  Accepts a test description and the actual test in the callback.  
  * Also can pass in fixtures as long as the names match.
- * ie: test("Some test to make sure thing works", (fixture1, fixture2) => { ... });
+ * ie: test("Making sure class method works", (fixture1, fixture2) => { ... });
  */
 test(String, Function);
 
@@ -107,7 +107,7 @@ createSpy(Object);
 
 ### CLI Flags
 
-Here is a list of CLI flags that can be run to change logging behavior:
+Here is a list of CLI flags that can be run to change console logging behavior:
 
 ```js
 -no-logs // Disables user input console logs

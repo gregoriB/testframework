@@ -16,22 +16,23 @@ Very light and limited testing framework.
 
 ## Usage in Nodejs
 
-Add folder to the root directly of your project. Import the `TestSuite` and be sure to export your test results after writing the tests.
+Run `npm install git://github.com/gregoriB/testlib.git` to install. Import the `TestSuite` and be sure to export your test results after writing the tests.
 
 Test files should contain `.test.js` in the name.  Fixture files should contain `.fixtures.js`.
 
-To run all tests, execute `node ./testlib/runner.js` in the CLI.  
+To run all tests, execute `npm explore testlib -- npm run tests` in the CLI.  
+
 Specific tests can be run by adding the file name without the extensions
 as an argument,
 <br>
-eg: `node ./testlib/runner.js person`
+eg: `npm explore testlib -- npm run tests person`
 
 <br>
 
 ### Basic example testing a `Person` class from `/src/tests/person.test.js`:
 ```js
 const Person = require("../person.js");
-const TestSuite = require("../../testlib/TestSuite.js");
+const TestSuite = require("testlib");
 const tests = new TestSuite();
 
 tests.run("Person Class", (tools) => {
@@ -126,7 +127,7 @@ eg: `node ./testlib/runner.js person -no-logs -no-errors`
 ```js
 const BlockChain = require('../BlockChain.js');
 const Transaction = require('../Transaction.js');
-const TestSuite = require('../../testlib/TestSuite.js');
+const TestSuite = require('testlib');
 
 const tests = new TestSuite();
 

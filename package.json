@@ -1,0 +1,24 @@
+{
+  "name": "testlib",
+  "version": "1.0.0",
+  "description": "A light and limited testing framework for NodeJS",
+  "main": "TestSuite.js",
+  "scripts": {
+    "tests": "node ./runner.js -no-errors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregoriB/testlib.git"
+  },
+  "keywords": [
+    "testing",
+    "framework",
+    "javascript"
+  ],
+  "author": "gregoriB",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gregoriB/testlib/issues"
+  },
+  "homepage": "https://github.com/gregoriB/testlib#readme"
+}

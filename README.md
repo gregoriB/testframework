@@ -118,7 +118,7 @@ Here is a list of CLI flags that can be run to change console logging behavior:
 -no-result-logs // Disables the results log(though I don't know why you'd want to do that)
 -only-result-logs // Only the results log is shown.  Doesn't show failing test details.
 ```
-eg: `node ./testlib/runner.js person -no-logs -no-errors`
+eg: `npm explore testlib -- npm run tests person -- -no-logs -no-errors`
 
 <br>
 

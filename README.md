@@ -33,9 +33,9 @@ eg: `npm explore testlib -- npm run tests person`
 ```js
 const Person = require("../person.js");
 const TestLib = require("testlib");
-const tests = new TestLib();
+const testlib = new TestLib();
 
-tests.run("Person Class", (tools) => {
+testlib.run("Person Class", (tools) => {
     const { test, assert } = tools;
 
     test("New person instance has correct name", () => {
@@ -44,7 +44,7 @@ tests.run("Person Class", (tools) => {
     });
 });
 
-module.exports = tests.getResults();
+module.exports = testlib.getResults();
 ```
 Here are an explanation of the tools that are passed into the `tests.run` callback:
 
@@ -129,9 +129,9 @@ const BlockChain = require('../BlockChain.js');
 const Transaction = require('../Transaction.js');
 const TestLib = require('testlib');
 
-const tests = new TestLib();
+const testlib = new TestLib();
 
-tests.run('Blockchain', (tools) => {
+testlib.run('Blockchain', (tools) => {
     const { test, beforeEach, assert, createSpy, fixtureProvider } = tools;
 
     let chain;
@@ -188,5 +188,5 @@ tests.run('Blockchain', (tools) => {
     });
 });
 
-module.exports = tests.getResults();
+module.exports = testlib.getResults();
 ```

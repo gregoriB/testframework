@@ -11,8 +11,8 @@ function init() {
 }
 
 function logResults(results) {
-    const TestLib = new TestLib();
-    TestLib.logTestResults(results);
+    const testlib = new TestLib();
+    testlib.logTestResults(results);
 }
 
 init();

@@ -2,7 +2,7 @@
   "name": "testlib",
   "version": "1.0.0",
   "description": "A light and limited testing framework for NodeJS",
-  "main": "TestSuite.js",
+  "main": "TestLib.js",
   "scripts": {
     "tests": "node ./runner.js"
   },

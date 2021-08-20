@@ -1,4 +1,4 @@
-const TestSuite = require('./TestSuite');
+const TestLib = require('./TestLib');
 const { applyFlags, setCustomLogs, getTestResults } = require('./utils');
 
 function init() {
@@ -11,8 +11,8 @@ function init() {
 }
 
 function logResults(results) {
-    const testSuite = new TestSuite();
-    testSuite.logTestResults(results);
+    const TestLib = new TestLib();
+    TestLib.logTestResults(results);
 }
 
 init();

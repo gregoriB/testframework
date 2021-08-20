@@ -1,7 +1,7 @@
 const { PASSED, FAILED, ASSERTIONS, TESTS } = require('./constants');
 const { getFunctionParams } = require('./utils');
 
-class TestSuite {
+class TestLib {
     initializeTestData() {
         this.tallies = {
             tests: {
@@ -280,4 +280,4 @@ class Spy {
     }
 }
 
-module.exports = TestSuite;
+module.exports = TestLib;

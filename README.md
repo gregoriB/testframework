@@ -16,7 +16,7 @@ Very light and limited testing framework.
 
 ## Usage in Nodejs
 
-Run `npm install git://github.com/gregoriB/testlib.git` to install. Import the `TestSuite` and be sure to export your test results after writing the tests.
+Run `npm install git://github.com/gregoriB/testlib.git` to install. Import the `TestLib` and be sure to export your test results after writing the tests.
 
 Test files should contain `.test.js` in the name.  Fixture files should contain `.fixtures.js`.
 
@@ -32,8 +32,8 @@ eg: `npm explore testlib -- npm run tests person`
 ### Basic example testing a `Person` class from `/src/tests/person.test.js`:
 ```js
 const Person = require("../person.js");
-const TestSuite = require("testlib");
-const tests = new TestSuite();
+const TestLib = require("testlib");
+const tests = new TestLib();
 
 tests.run("Person Class", (tools) => {
     const { test, assert } = tools;
@@ -127,9 +127,9 @@ eg: `npm explore testlib -- npm run tests person -- -no-logs -no-errors`
 ```js
 const BlockChain = require('../BlockChain.js');
 const Transaction = require('../Transaction.js');
-const TestSuite = require('testlib');
+const TestLib = require('testlib');
 
-const tests = new TestSuite();
+const tests = new TestLib();
 
 tests.run('Blockchain', (tools) => {
     const { test, beforeEach, assert, createSpy, fixtureProvider } = tools;

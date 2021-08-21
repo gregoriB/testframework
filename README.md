@@ -16,7 +16,7 @@ Very light and limited testing framework.
 
 ## Usage in Nodejs
 
-Run `npm install git://github.com/gregoriB/testlib.git` to install. Import the `TestLib` and be sure to export your test results after writing the tests.
+Run `npm install git://github.com/gregoriB/testlib.git` to install. Import the `TestLib`, create a new instance of it, write your tests, and then export the instance.
 
 Test files should contain `.test.js` in the name.  Fixture files should contain `.fixtures.js`.
 
@@ -44,7 +44,7 @@ testlib.run("Person Class", (tools) => {
     });
 });
 
-module.exports = testlib.getResults();
+module.exports = testlib;
 ```
 Here are an explanation of the tools that are passed into the `tests.run` callback:
 
@@ -122,6 +122,33 @@ eg: `npm explore testlib -- npm run tests person -- -no-logs -no-errors`
 
 <br>
 
+### Asynchronous testing
+
+Async/await is now supported.  Just declare both the `run` and `test` callbacks as asynchronous.
+
+```js
+const TestLib = require("testlib");
+const testlib = new TestLib();
+
+testlib.run("Async testing", async (tools) => {
+    const { test, assert } = tools;
+
+    await test("Waits for the promise to resolve", async () => {
+        let result = 'FAIL';
+        await new Promise(resolve => {
+            setTimeout(() => {
+                result = 'PASS';
+                resolve();
+           }, 1000);
+        });
+        assert.equal(result, 'PASS');
+    });
+});
+
+module.exports = testlib;
+```
+<br>
+
 ## Some examples of tests from an actual project
 
 ```js
@@ -188,5 +215,5 @@ testlib.run('Blockchain', (tools) => {
     });
 });
 
-module.exports = testlib.getResults();
+module.exports = testlib;
 ```

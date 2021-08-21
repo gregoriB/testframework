@@ -6,11 +6,11 @@ function logResults(results) {
     testlib.logTestResults(results);
 }
 
-(function() {
+(async function() {
     /*** Function call order matters here ***/
     setCustomLogs();
     const args = process.argv.slice(2);
     applyFlags(args);
-    const results = getTestResults(args);
+    const results = await getTestResults(args);
     logResults(results);
 })();

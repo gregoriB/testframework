@@ -14,9 +14,20 @@ class TestLib {
             }
         }
         this.beforeEachCallbacks = [];
+        this.complete = false;
     }
 
-    getResults() {
+    async getResults() {
+        await new Promise(resolve => {
+            const testlib = this;
+            function resultsPolling() {
+                if (testlib.complete === true) {
+                    clearInterval(this);
+                    resolve();
+                }
+            }
+            setInterval(resultsPolling);
+        });
         return { description: this.description, tallies: this.tallies };
     }
 
@@ -30,14 +41,15 @@ class TestLib {
         }
     }
 
-    run(description, fn) {
+    async run(description, fn) {
         this.description = description;
         this.initializeTestData();
         console.logTest(`\nRunning tests for ${description} \n`);
-        fn(this.getTestMethods());
+        await fn(this.getTestMethods());
+        this.complete = true;
     }
 
-    test(test, fn) {
+    async test(test, fn) {
         console.logTest(`Test: "${test}"`);
         this.beforeEachCallbacks.forEach(cb => {
             const args = this.getFixtureArgsFromParams(cb);
@@ -45,7 +57,7 @@ class TestLib {
         });
         const prevFailed = this.getTally(ASSERTIONS).failed;
         const args = this.getFixtureArgsFromParams(fn)
-        fn(...args);
+        await fn(...args);
         const verdict = prevFailed < this.getTally(ASSERTIONS).failed ? FAILED : PASSED;
         this.incrementTestsTally(verdict);
         if (verdict === FAILED) {

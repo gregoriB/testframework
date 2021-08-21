@@ -78,7 +78,7 @@ function getFixtureData() {
  * Gets the test results from the test files.  Filters by test file name 
  * args input in the command line, eg: "blockchain"
  */
-function getTestResults(args) {
+async function getTestResults(args) {
     args = args.filter(arg => !arg.includes('-'));
     const testRe = /.test.js/;
     let testFiles = findMatchingFiles(testRe);
@@ -92,7 +92,13 @@ function getTestResults(args) {
             return isMatch;
         }));
     }
-    return testFiles.map(file => require(file));
+    let results = [];
+    for (let file of testFiles) {
+        const tests = require(file);
+        const result = await tests.getResults();
+        results.push(result); 
+    }
+    return results;
 }
 
 /*
@@ -102,8 +108,11 @@ function getFunctionParams(fn) {
     const fnStr = fn.toString();
     let open = fnStr.indexOf('(');
     let close = fnStr.indexOf(')');
+    if (close === open + 1) {
+        return [];
+    }
     // If is arrow function without parenthesis around parameter
-    if (open !== 0 && fnStr.slice(0, 8) !== 'function') {
+    if (open !== 0 && (fnStr.slice(0, 8) !== 'function' && fnStr.slice(0, 6) !== 'async ')) {
         open = 0;
         close = fnStr.indexOf('>') - 2;
     }

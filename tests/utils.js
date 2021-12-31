@@ -1,3 +1,5 @@
+const { orderObject, prepareObject } = require('../utils.js'); 
+
 function assertEquals(actual, expected, debug) {
     if (typeof actual === 'object') {
         actual = prepareObject(actual);
@@ -15,24 +17,16 @@ function assertEquals(actual, expected, debug) {
     return true;
 }
 
-function orderObject(obj) {
-    const keys = Object.keys(obj);
-    keys.sort();
-    return keys.reduce((acc, curr) => {
-        acc[curr] = obj[curr];
-        return acc;
-    }, {});
-}
-
-function prepareObject(obj) {
-    if (!Array.isArray(obj)) {
-        obj = orderObject(obj);
+function Counter(_count = 0) {
+    return {
+        increment: () => _count++,
+        getCount: () => _count,
     }
-    return JSON.stringify(obj);
 }
 
 module.exports = {
     assertEquals,
+    Counter,
 }
 
 /* ================= UNIT TESTS ====================== */
@@ -108,11 +102,39 @@ function testAssertEquals() {
     });
 }
 
+function testCounter() {
+    console.log('TEST COUNTER:');
+    function newCounterIsIntialized() {
+        console.log('new counter is initialized');
+        const counter = new Counter();
+        if (typeof counter !== 'object') {
+            throw new Error('Counter was not initialized');
+        }
+    }
+
+    function counterIncrements() {
+        const counter = new Counter();
+        counter.increment();
+        if (counter.getCount() !== 1) {
+            throw new Error('Counter does not increment');
+        }
+        counter.increment();
+        if (counter.getCount() !== 2) {
+            throw new Error('Counter does not increment beyond 1');
+        }
+    }
+
+    newCounterIsIntialized();
+    counterIncrements();
+}
+
 function runSelfTests() {
-    console.log('========== Self Test Utils ============');
+    console.log('\n ========== Self Test Utils ============ \n');
+    console.log('\n - UTILS - \n');
     testOrderObject();
     testPrepareObject();
     testAssertEquals();
+    testCounter();
 }
 
 runSelfTests();

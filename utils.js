@@ -123,10 +123,28 @@ function getFunctionParams(fn) {
         .filter(item => item !== '');
 }
 
+function orderObject(obj) {
+    return Object.keys(obj)
+        .sort()
+        .reduce((acc, curr) => {
+            acc[curr] = obj[curr];
+            return acc; 
+        }, {});
+}
+
+function prepareObject(obj) {
+    if (!Array.isArray(obj)) {
+        obj = orderObject(obj);
+    }
+    return JSON.stringify(obj);
+}
+
 module.exports = {
     getFixtureData,
     applyFlags,
     setCustomLogs,
     getTestResults,
-    getFunctionParams
+    getFunctionParams,
+    orderObject,
+    prepareObject,
 };

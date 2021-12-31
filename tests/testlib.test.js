@@ -1,6 +1,6 @@
 const TestLib = require('../TestLib');
 const { PASSED, FAILED, ASSERTIONS, TESTS } = require('../constants');
-const { assertEquals } = require('./utils.js');
+const { assertEquals, Counter } = require('./utils.js');
 
 const tallies = {
     [TESTS]: {
@@ -15,6 +15,7 @@ const tallies = {
 
 // TestLib methods
 const description = 'THIS IS A TEST';
+
 const INITIALIZE_TEST_DATA = 'initializeTestData';
 const CALLBACK_ARG = 'callbackArg';
 const EXECUTE_BEFORE_CALLBACKS = 'executeBeforeCallbacks';
@@ -22,6 +23,8 @@ const CONSOLE_LOG_TEST = 'console.logTest';
 const INCREMENT_TESTS_TALLY = 'incrementTestsTally';
 const ALERT_TEST_FAILURE = 'alertTestFailure';
 const GET_FIXTURE_ARGS_FROM_PARAMS = 'getFixtureArgsFromParams';
+const INITIALIZE_REPORT = 'initializeReport';
+const UPDATE_REPORT = 'updateReport';
 
 function newTestlibInstanceInitialized() {
     console.log('initializes a new instance of TestLib');
@@ -220,9 +223,299 @@ function logTestResultsMethod() {
     assertEquals(logCount > 3, true);
 }
 
+function assertions() {
+    console.log('\n - ASSERTIONS - \n');
+    const testlib = new TestLib();
+    const testObj = { [TESTS]: { ...tallies[TESTS] }, [ASSERTIONS]: { ...tallies[ASSERTIONS] }};
+    testlib.tallies = testObj;
+    const testArr = [1, 'two', false, null, undefined, testObj, []];
+    const testKeys = ['one', 2, 'three', 4, 'five', 6];
+    const methods = testlib.getTestMethods();
 
-async function runSelfTests() {
-    console.log('========== TestLib ============');
+    function equal() {
+        console.log('EQUAL:')
+        const testMethod = methods.assert.equal;
+        function pass() {
+            console.log(' method passes');
+            const counter = new Counter();
+            testlib.handleAssertionPass = counter.increment;
+            testMethod(tallies, testObj);
+            assertEquals(counter.getCount(), 1);
+            testMethod(testArr, [...testArr]);
+            assertEquals(counter.getCount(), 2);
+            testMethod(1, 1);
+            assertEquals(counter.getCount(), 3);
+            testMethod('one', 'one');
+            assertEquals(counter.getCount(), 4);
+            testMethod(true, true);
+            assertEquals(counter.getCount(), 5);
+        }
+
+        function fail() {
+            console.log(' method fails');
+            const counter = new Counter();
+            testlib.handleAssertionFail = counter.increment;
+            testMethod(tallies, { ...testObj, 1: 'one' });
+            assertEquals(counter.getCount(), 1);
+            testMethod(testArr, [...testArr, 0]);
+            assertEquals(counter.getCount(), 2);
+            testMethod(1, 2);
+            assertEquals(counter.getCount(), 3);
+            testMethod('one', 'two');
+            assertEquals(counter.getCount(), 4);
+            testMethod(true, false);
+            assertEquals(counter.getCount(), 5);
+        }
+
+        pass();
+        fail();
+    }
+
+    function notEqual() {
+        console.log('NO EQUAL:')
+        const testMethod = methods.assert.notEqual;
+        function pass() {
+            console.log(' method passes');
+            const counter = new Counter();
+            testlib.handleAssertionPass = counter.increment;
+            testMethod(tallies, { ...testObj, 1: 'one' });
+            assertEquals(counter.getCount(), 1);
+            testMethod(testArr, [...testArr, 0]);
+            assertEquals(counter.getCount(), 2);
+            testMethod(1, 2);
+            assertEquals(counter.getCount(), 3);
+            testMethod('one', 'two');
+            assertEquals(counter.getCount(), 4);
+            testMethod(true, false);
+            assertEquals(counter.getCount(), 5);
+        }
+
+        function fail() {
+            console.log(' method fails');
+            const counter = new Counter();
+            testlib.handleAssertionFail = counter.increment;
+            testMethod(tallies, testObj);
+            assertEquals(counter.getCount(), 1);
+            testMethod(testArr, [...testArr]);
+            assertEquals(counter.getCount(), 2);
+            testMethod(1, 1);
+            assertEquals(counter.getCount(), 3);
+            testMethod('one', 'one');
+            assertEquals(counter.getCount(), 4);
+            testMethod(true, true);
+            assertEquals(counter.getCount(), 5);
+        }
+
+        pass();
+        fail();
+    }
+
+    function hasKeys() {
+        console.log('HAS KEYS:')
+        const testMethod = methods.assert.hasKeys;
+        const testObjWithKeys = testKeys.reduce((acc, curr) => {
+            acc[curr] = null;
+            return acc;
+        }, {});
+
+        function pass() {
+            console.log(' method passes');
+            const counter = new Counter();
+            testlib.handleAssertionPass = counter.increment;
+            testMethod(testObjWithKeys, testKeys);
+            assertEquals(counter.getCount(), 1);
+            testMethod({ ...testObjWithKeys, test: 'test' }, testKeys);
+            assertEquals(counter.getCount(), 2);
+        }
+
+        function fail() {
+            console.log(' method fails');
+            const counter = new Counter();
+            testlib.handleAssertionFail = counter.increment;
+            testMethod(testObjWithKeys, [ 1, 2, 3, 4, 5 ]);
+            assertEquals(counter.getCount(), 1);
+        }
+
+        pass();
+        fail();
+    }
+
+    function hasValues() {
+        console.log('HAS VALUES:')
+        const testMethod = methods.assert.hasValues;
+        const testObjWithValues = testKeys.reduce((acc, curr, i) => {
+            acc[curr] = testArr[i];
+            return acc;
+        }, {});
+
+        function pass() {
+            console.log(' method passes');
+            const counter = new Counter();
+            testlib.handleAssertionPass = counter.increment;
+            testMethod(testObjWithValues, testObjWithValues);
+            assertEquals(counter.getCount(), 1);
+        }
+
+        function fail() {
+            console.log(' method fails');
+            const counter = new Counter();
+            testlib.handleAssertionFail = counter.increment;
+            testMethod(testObjWithValues, {});
+            assertEquals(counter.getCount(), 1);
+        }
+
+        pass();
+        fail();
+    }
+
+    function isNotUndefined() {
+        console.log('IS NOT UNDEFINED:')
+        const testMethod = methods.assert.isNotUndefined;
+
+        function pass() {
+            console.log(' method passes');
+            const counter = new Counter();
+            testlib.handleAssertionPass = counter.increment;
+            testMethod(1);
+            testMethod('one');
+            testMethod(null);
+            testMethod(false);
+            testMethod(true);
+            testMethod({});
+            testMethod([]);
+            assertEquals(counter.getCount(), 7);
+        }
+
+        function fail() {
+            console.log(' method fails');
+            const counter = new Counter();
+            testlib.handleAssertionFail = counter.increment;
+            testMethod(undefined);
+            assertEquals(counter.getCount(), 1);
+        }
+
+        pass();
+        fail();
+    }
+
+    function isUndefined() {
+        console.log('IS UNDEFINED')
+        const testMethod = methods.assert.isUndefined;
+
+        function pass() {
+            console.log(' method passes');
+            const counter = new Counter();
+            testlib.handleAssertionPass = counter.increment;
+            testMethod(undefined);
+            assertEquals(counter.getCount(), 1);
+        }
+
+        function fail() {
+            console.log(' method fails');
+            const counter = new Counter();
+            testlib.handleAssertionFail = counter.increment;
+            testMethod(1);
+            testMethod('one');
+            testMethod(null);
+            testMethod(false);
+            testMethod(true);
+            testMethod({});
+            testMethod([]);
+            assertEquals(counter.getCount(), 7);
+        }
+
+        pass();
+        fail();
+    }
+
+    equal();
+    notEqual();
+    hasKeys();
+    hasValues();
+    isNotUndefined();
+    isUndefined();
+}
+
+function spy() {
+    console.log('\n - SPY - \n');
+    const testlib = new TestLib();
+    const methods = testlib.getTestMethods();
+    const testReports = { test: { args: [], returned: [], callCount: 0 }};
+
+    function initializeNewSpy() {
+        console.log('initialized a new spy class');
+        const testSpy = methods.createSpy({ context: 'context' });
+        assertEquals(typeof testSpy, 'object'); 
+        assertEquals(testSpy.context, { context: 'context' });
+        assertEquals(testSpy.reports, {});
+    }
+
+    function getReports() {
+        console.log('GET REPORTS:');
+        const testSpy = methods.createSpy({});
+        testSpy.reports = { test: 'testing' }
+        assertEquals(testSpy.getReports(), testSpy.reports);
+    }
+    
+    function initializeReport() {
+        console.log('INITIALIZE REPORT:')
+        const testSpy = methods.createSpy({});
+        testSpy.initializeReport('test');
+        assertEquals(testSpy.reports, testReports);
+    }
+
+    function updateReport() {
+        console.log('UPDATE REPORT');
+        const testSpy = methods.createSpy({});
+        testSpy.reports = { test: { ...testReports.test }};
+        const testArgs = ['arg1', 'arg2'];
+        const testReturned = ['return1', 'return2'];
+        testSpy.updateReport('test', testArgs, testReturned);
+        const expectedReport = { 
+            test: { 
+                args: [[0, testArgs]], 
+                returned: [[0, testReturned]],
+                callCount: 1,
+            }
+        }
+        assertEquals(testSpy.reports, expectedReport);
+    }
+
+    function watch() {
+        console.log('WATCH');
+        const testSpy = methods.createSpy({});
+        const expectedMethodCalls = [INITIALIZE_REPORT, UPDATE_REPORT];
+        const actualMethodCalls = [];
+        const testReturn = 'this is a return value';
+        const testFunction = () => testReturn;
+        const expectedArgs = ['arg1', 'arg2'];
+        let actualArgs;
+        let actualFnName;
+        let actualReturned;
+        testSpy.initializeReport = () => actualMethodCalls.push(INITIALIZE_REPORT);
+        testSpy.updateReport = (fnName, args, returned) => {
+            actualFnName = fnName;
+            actualArgs = args;
+            actualReturned = returned;
+            actualMethodCalls.push(UPDATE_REPORT);
+        };
+        const testWatch = testSpy.watch(testFunction);
+        testWatch(...expectedArgs);
+        assertEquals(actualMethodCalls, expectedMethodCalls);
+        assertEquals(actualFnName, 'testFunction');
+        assertEquals(actualArgs, expectedArgs);
+        assertEquals(actualReturned, testReturn);
+    }
+
+    initializeNewSpy();
+    getReports();
+    initializeReport();
+    updateReport();
+    watch();
+}
+
+async function mainClass() {
+    console.log('\n - MAIN CLASS - \n')
     newTestlibInstanceInitialized();
     initializeTestDataMethod();
     await getResultsMethod();
@@ -240,6 +533,13 @@ async function runSelfTests() {
     handleAssertionFailMethod();
     logTestResultsMethod();
     // TODO: fixtureProvider, assertions, and spy tests
+}
+
+async function runSelfTests() {
+    console.log('\n ========== Testing Tools ============ \n');
+    await mainClass();
+    assertions();
+    spy();
 }
 
 runSelfTests();

@@ -1,5 +1,5 @@
 const { PASSED, FAILED, ASSERTIONS, TESTS } = require('./constants');
-const { getFunctionParams } = require('./utils');
+const { getFunctionParams, orderObject, prepareObject } = require('./utils');
 
 class TestLib {
     initializeTestData() {
@@ -32,7 +32,7 @@ class TestLib {
 
     getTestMethods() {
         return {
-            assert: new Assert(this).getMethodsWithContext(),
+            assert: new Assert(this).getMethods(),
             createSpy: context => new Spy(context),
             beforeEach: this.beforeEach.bind(this),
             test: this.test.bind(this),
@@ -161,10 +161,21 @@ class TestLib {
 
 class Assert {
     constructor(context) {
-        this.context = context;
+        this.equal = this.equal.bind(context);
+        this.notEqual = this.notEqual.bind(context);
+        this.hasKeys = this.hasKeys.bind(context);
+        this.hasValues = this.hasValues.bind(context);
+        this.isNotUndefined = this.isNotUndefined.bind(context);
+        this.isUndefined = this.isUndefined.bind(context);
     }
 
-    equal(actual, expected) {
+    equal(actual, expected, debug) {
+        if (typeof actual === 'object') {
+            actual = prepareObject(actual);
+        }
+        if (typeof expected === 'object') {
+            expected = prepareObject(expected);
+        }
         try {
             if (actual === expected) {
                 this.handleAssertionPass();
@@ -178,6 +189,12 @@ class Assert {
     }
 
     notEqual(actual, expected) {
+        if (typeof actual === 'object') {
+            actual = prepareObject(actual);
+        }
+        if (typeof expected === 'object') {
+            expected = prepareObject(expected);
+        }
         try {
             if (actual !== expected) {
                 this.handleAssertionPass();
@@ -190,7 +207,7 @@ class Assert {
         }
     }
 
-    hasExpectedKeys(actual, expected) {
+    hasKeys(actual, expected) {
         try {
             for (let key of expected) {
                 if (!actual.hasOwnProperty(key)) {
@@ -203,7 +220,8 @@ class Assert {
         }
     }
 
-    hasExpectedValues(actual, expected) {
+    hasValues(actual, expected) {
+        console.warn('assert.hasValues is deprecated. Try using assert.equals to check object equality');
         try {
             const actualLen = Object.keys(actual).length;
             const expectedLen = Object.keys(expected).length;
@@ -224,7 +242,7 @@ class Assert {
         }
     }
 
-    exists(value) {
+    isNotUndefined(value) {
         try {
             if (value !== undefined) {
                 this.handleAssertionPass();
@@ -237,7 +255,7 @@ class Assert {
         }
     }
 
-    doesNotExist(value) {
+    isUndefined(value) {
         try {
             if (value === undefined) {
                 this.handleAssertionPass();
@@ -250,15 +268,15 @@ class Assert {
         }
     }
 
-    getMethodsWithContext() {
-        const { equal, notEqual, hasExpectedKeys, hasExpectedValues, exists, doesNotExist } = this;
+    getMethods() {
+        const { equal, notEqual, hasKeys, hasValues, isUndefined, isNotUndefined } = this;
         return {
-            equal: equal.bind(this.context),
-            notEqual: notEqual.bind(this.context),
-            hasExpectedKeys: hasExpectedKeys.bind(this.context),
-            hasExpectedValues: hasExpectedValues.bind(this.context),
-            exists: exists.bind(this.context),
-            doesNotExist: doesNotExist.bind(this.context),
+            equal,
+            notEqual,
+            hasValues,
+            hasKeys,
+            isUndefined,
+            isNotUndefined,
         }
     }
 }

@@ -27,6 +27,7 @@ function newTestlibInstanceInitialized() {
     console.log('initializes a new instance of TestLib');
     const testlib = new TestLib();
     assertEquals(typeof testlib, 'object');
+    assertEquals(testlib.tallies, undefined);
 }
 
 function initializeTestDataMethod() {
@@ -154,11 +155,11 @@ function incrementTallyMethod() {
 }
 
 function incrementTestsTallyMethod() {
-    console.log('incrementTally method increments the test tallies');
+    console.log('incrementTestsTally method increments the test tallies');
     const testlib = new TestLib();
     testlib.tallies = { [TESTS]: { ...tallies[TESTS] }, [ASSERTIONS]: { ...tallies[ASSERTIONS] }};
-    testlib.incrementTally(TESTS, PASSED);
-    testlib.incrementTally(TESTS, FAILED);
+    testlib.incrementTestsTally(PASSED);
+    testlib.incrementTestsTally(FAILED);
     assertEquals(testlib.tallies[TESTS][PASSED], 1);
     assertEquals(testlib.tallies[TESTS][FAILED], 1);
     assertEquals(testlib.tallies[ASSERTIONS][PASSED], 0);
@@ -169,8 +170,8 @@ function incrementAssertionsTallyMethod() {
     console.log('incrementTally method increments the assertions tallies');
     const testlib = new TestLib();
     testlib.tallies = { [TESTS]: { ...tallies[TESTS] }, [ASSERTIONS]: { ...tallies[ASSERTIONS] }};
-    testlib.incrementTally([ASSERTIONS], PASSED);
-    testlib.incrementTally([ASSERTIONS], FAILED);
+    testlib.incrementAssertionsTally(PASSED);
+    testlib.incrementAssertionsTally(FAILED);
     assertEquals(testlib.tallies[ASSERTIONS][PASSED], 1);
     assertEquals(testlib.tallies[ASSERTIONS][FAILED], 1);
     assertEquals(testlib.tallies[TESTS][PASSED], 0);

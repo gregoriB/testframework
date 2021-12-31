@@ -223,6 +223,24 @@ function logTestResultsMethod() {
     assertEquals(logCount > 3, true);
 }
 
+function getTestMethodsMethod() {
+    console.log('getTestMethods returns the correct methods');
+    const testlib = new TestLib();
+    const expectedMethods = [
+        'createSpy', 
+        'beforeEach',
+        'test',
+        'waitFor',
+        'fixtureProvider',
+    ];
+    const methods = testlib.getTestMethods();
+    assertEquals(Object.keys(methods).length, 6);
+    expectedMethods.forEach(method => {
+        assertEquals(typeof methods[method], 'function');
+    });
+    assertEquals(typeof methods.assert, 'object');
+}
+
 function assertions() {
     console.log('\n - ASSERTIONS - \n');
     const testlib = new TestLib();
@@ -521,6 +539,7 @@ async function mainClass() {
     await getResultsMethod();
     await runMethod();
     await testMethod();
+    getTestMethodsMethod();
     executeBeforeEachCallbacksMethod();
     beforeEachMethod();
     alertTestFailureMethod();

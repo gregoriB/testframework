@@ -19,11 +19,9 @@ const INITIALIZE_TEST_DATA = 'initializeTestData';
 const CALLBACK_ARG = 'callbackArg';
 const EXECUTE_BEFORE_CALLBACKS = 'executeBeforeCallbacks';
 const CONSOLE_LOG_TEST = 'console.logTest';
-const CONSOLE_LOG_ASSERT = 'console.logAssert';
 const INCREMENT_TESTS_TALLY = 'incrementTestsTally';
 const ALERT_TEST_FAILURE = 'alertTestFailure';
 const GET_FIXTURE_ARGS_FROM_PARAMS = 'getFixtureArgsFromParams';
-const WAIT_FOR = 'waitFor';
 
 function newTestlibInstanceInitialized() {
     console.log('initializes a new instance of TestLib');
@@ -92,7 +90,10 @@ function executeBeforeEachCallbacksMethod() {
     const testlib = new TestLib();
     const expectedMethodCalls = [GET_FIXTURE_ARGS_FROM_PARAMS, EXECUTE_BEFORE_CALLBACKS, GET_FIXTURE_ARGS_FROM_PARAMS, EXECUTE_BEFORE_CALLBACKS];
     const actualMethodCalls = [];
-    testlib.beforeEachCallbacks = [() => actualMethodCalls.push(EXECUTE_BEFORE_CALLBACKS), () => actualMethodCalls.push(EXECUTE_BEFORE_CALLBACKS)];
+    testlib.beforeEachCallbacks = [
+        () => actualMethodCalls.push(EXECUTE_BEFORE_CALLBACKS), 
+        () => actualMethodCalls.push(EXECUTE_BEFORE_CALLBACKS)
+    ];
     testlib.getFixtureArgsFromParams = () => {
         actualMethodCalls.push(GET_FIXTURE_ARGS_FROM_PARAMS);
         return [];
@@ -155,7 +156,7 @@ function incrementTallyMethod() {
 function incrementTestsTallyMethod() {
     console.log('incrementTally method increments the test tallies');
     const testlib = new TestLib();
-    testlib.tallies = { tests: { ...tallies.tests }, [ASSERTIONS]: { ...tallies[ASSERTIONS] }};
+    testlib.tallies = { [TESTS]: { ...tallies[TESTS] }, [ASSERTIONS]: { ...tallies[ASSERTIONS] }};
     testlib.incrementTally(TESTS, PASSED);
     testlib.incrementTally(TESTS, FAILED);
     assertEquals(testlib.tallies[TESTS][PASSED], 1);
@@ -208,6 +209,17 @@ function handleAssertionFailMethod() {
     assertEquals(actualLogs, expectedLogs);
 }
 
+function logTestResultsMethod() {
+    console.log('logTestResults method logs the test results');
+    const testlib = new TestLib();
+    let logCount = 0;
+    console.logResult = () => logCount++;
+    testlib.logTestResults([{ tallies }]);
+    // TODO: make test less brittle
+    assertEquals(logCount > 3, true);
+}
+
+
 async function runSelfTests() {
     console.log('========== TestLib ============');
     newTestlibInstanceInitialized();
@@ -225,7 +237,8 @@ async function runSelfTests() {
     getTallyMethod();
     handleAssertionPassMethod();
     handleAssertionFailMethod();
-    // TODO: fixtureProvider test
+    logTestResultsMethod();
+    // TODO: fixtureProvider, assertions, and spy tests
 }
 
 runSelfTests();

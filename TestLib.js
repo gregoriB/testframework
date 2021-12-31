@@ -4,13 +4,13 @@ const { getFunctionParams } = require('./utils');
 class TestLib {
     initializeTestData() {
         this.tallies = {
-            tests: {
-                passed: 0,
-                failed: 0
+            [TESTS]: {
+                [PASSED]: 0,
+                [FAILED]: 0
             },
-            assertions: {
-                passed: 0,
-                failed: 0
+            [ASSERTIONS]: {
+                [PASSED]: 0,
+                [FAILED]: 0
             }
         }
         this.beforeEachCallbacks = [];
@@ -49,16 +49,20 @@ class TestLib {
         this.complete = true;
     }
 
-    async test(test, fn) {
-        console.logTest(`Test: "${test}"`);
+    executeBeforeEachCallbacks() {
         this.beforeEachCallbacks.forEach(cb => {
             const args = this.getFixtureArgsFromParams(cb);
             cb(...args);
         });
-        const prevFailed = this.getTally(ASSERTIONS).failed;
+    }
+
+    async test(test, fn) {
+        console.logTest(`Test: "${test}"`);
+        this.executeBeforeEachCallbacks();
+        const prevFailed = this.getTally(ASSERTIONS)[FAILED];
         const args = this.getFixtureArgsFromParams(fn)
         await fn(...args);
-        const verdict = prevFailed < this.getTally(ASSERTIONS).failed ? FAILED : PASSED;
+        const verdict = prevFailed < this.getTally(ASSERTIONS)[FAILED] ? FAILED : PASSED;
         this.incrementTestsTally(verdict);
         if (verdict === FAILED) {
             this.alertTestFailure(test);
@@ -139,14 +143,14 @@ class TestLib {
             console.logResult(`
                 ===== ${result.description} =====
                 
-                ${tests.passed + tests.failed} TESTS FINISHED
+                ${tests[PASSED] + tests[FAILED]} TESTS FINISHED
 
                 *
-                * ${assertions.passed} Assertions Passed
-                * ${assertions.failed} Assertions Failed
+                * ${assertions[PASSED]} Assertions Passed
+                * ${assertions[FAILED]} Assertions Failed
                 * 
-                * ${tests.passed} Tests Passed
-                * ${tests.failed} Tests Failed
+                * ${tests[PASSED]} Tests Passed
+                * ${tests[FAILED]} Tests Failed
                 * 
             `);
         });

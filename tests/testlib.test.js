@@ -551,7 +551,7 @@ async function mainClass() {
     handleAssertionPassMethod();
     handleAssertionFailMethod();
     logTestResultsMethod();
-    // TODO: fixtureProvider, assertions, and spy tests
+    // TODO: fixtureProvider
 }
 
 async function runSelfTests() {
